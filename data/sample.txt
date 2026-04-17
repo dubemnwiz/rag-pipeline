@@ -1,0 +1,37 @@
+Retrieval-Augmented Generation (RAG)
+
+Retrieval-Augmented Generation (RAG) is a technique that improves the accuracy and reliability of large language model (LLM) responses by grounding them in external knowledge retrieved at inference time. Instead of relying solely on knowledge baked into the model's weights during training, RAG retrieves relevant documents from an external store and includes them in the prompt as context.
+
+How RAG Works
+
+A RAG pipeline has two main phases: indexing and querying.
+
+During indexing, documents are split into small chunks, converted into dense vector embeddings, and stored in a vector database. Each chunk is stored alongside its embedding and any relevant metadata, such as the source filename or page number.
+
+During querying, the user's question is embedded using the same model used during indexing. The vector database performs a similarity search, returning the chunks whose embeddings are closest to the question embedding. These chunks are then included in the prompt sent to the language model, which uses them to generate a grounded answer.
+
+Vector Embeddings
+
+An embedding is a list of floating-point numbers that represents the semantic meaning of a piece of text. Sentences with similar meanings produce embeddings that are geometrically close in high-dimensional space. The distance between two embeddings is typically measured using cosine similarity, which measures the angle between two vectors rather than their absolute distance. This makes cosine similarity robust to differences in text length.
+
+Common embedding models include OpenAI's text-embedding-ada-002, Cohere's embed model, and open-source models like sentence-transformers/all-MiniLM-L6-v2. The latter runs locally and produces 384-dimensional embeddings, making it a popular choice for cost-sensitive applications.
+
+ChromaDB
+
+ChromaDB is an open-source vector database designed for AI applications. It can run fully in-process (embedded in the same Python process as your application) or as a standalone server. ChromaDB organises vectors into collections, which are analogous to tables in a relational database. Each entry in a collection has a unique ID, a vector embedding, the original document text, and optional metadata.
+
+ChromaDB supports multiple distance functions including cosine similarity, L2 (Euclidean) distance, and inner product. For text retrieval tasks, cosine similarity is typically preferred because it is invariant to the magnitude of the embedding vector.
+
+Chunking Strategies
+
+The choice of chunk size significantly affects retrieval quality. Large chunks provide more context per retrieval but reduce precision — a query about a specific detail may retrieve a chunk that is mostly about something else. Small chunks are more precise but may lose important surrounding context.
+
+A common approach is to use overlapping chunks: each chunk shares some text with the previous and next chunk. This prevents important information from being split across a boundary and lost. Typical values are 500–1000 characters per chunk with 10–20% overlap.
+
+More advanced strategies include recursive character splitting (splitting on paragraph breaks first, then sentences, then words), semantic chunking (grouping sentences by semantic similarity), and document-structure-aware chunking (splitting on headings in Markdown or section breaks in PDFs).
+
+Limitations of RAG
+
+RAG significantly reduces hallucination by grounding responses in retrieved text, but it does not eliminate it. The model can still misinterpret retrieved context or fail to notice that the context does not actually answer the question. Retrieval quality is also a hard ceiling on answer quality: if the relevant information is not in the vector store, or if the retrieval step fails to surface it, the model cannot produce a correct answer regardless of its capabilities.
+
+Other limitations include the context window size of the underlying LLM (which limits how many chunks can be included), the quality of the embedding model, and sensitivity to how documents are chunked and cleaned during ingestion.

@@ -22,10 +22,9 @@ TOP_K_RESULTS = int(os.getenv("TOP_K_RESULTS", "5"))
 # embedding model: to switch, delete .chroma/ and re-run ingest.py.
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
-# max size of the cache
 MAX_CACHE_SIZE = 1
 
-# singleton helpers
+# lazy singleton helpers
 # using lru_cache to cache the embedding function and chroma client
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -40,7 +39,7 @@ def get_chroma_client() -> chromadb.PersistentClient:
     Return (and cache) a ChromaDB PersistentClient.
 
     PersistentClient saves data to disk at CHROMA_PERSIST_DIR so your
-    embedded documents survive server restarts. Use chromadb.Client()
+    embedded documents survive server restarts. Use chromadb.Client()g
     instead if you want an in-memory-only store (useful for testing).
     """
     return chromadb.PersistentClient(path=CHROMA_PERSIST_DIR)

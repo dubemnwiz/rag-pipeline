@@ -59,6 +59,7 @@ class RetrievalAssessment(BaseModel):
     )
 
     # enforce that new_search_term is needed when needs_more_data is True
+    # unlikely, but good to have
     @model_validator(mode="after")
     def search_term_required_when_needs_more_data(self) -> "RetrievalAssessment":
         if self.needs_more_data and not self.new_search_term:
@@ -124,7 +125,7 @@ class AskResponse(BaseModel):
 
 
 # internal context carrier
-# used internally by rag_chain.py to pass retrieved chunks 
+# used by the RAG pipeline to pass retrieved chunks 
 # between the verification loop and answer generation.
 
 class RetrievedContext(BaseModel):
