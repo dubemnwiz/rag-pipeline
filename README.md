@@ -1,6 +1,6 @@
 # RAG Pipeline
 
-A Python Retrieval-Augmented Generation (RAG) API backed by **ChromaDB** and **Claude 3.5 Sonnet**, featuring a self-auditing **Verification Loop** where Claude checks whether the retrieved context is actually sufficient before answering.
+A Python Retrieval-Augmented Generation (RAG) API backed by **ChromaDB** and **Claude 3.5 Sonnet**, featuring a self-auditing verification loop where Claude checks whether the retrieved context is actually sufficient before answering.
 
 ---
 
@@ -8,7 +8,7 @@ A Python Retrieval-Augmented Generation (RAG) API backed by **ChromaDB** and **C
 
 Standard RAG is: retrieve → stuff context into prompt → hope for the best.
 
-This pipeline adds a **Verification Loop**:
+This pipeline adds verification within a loop:
 
 ```
 User question
